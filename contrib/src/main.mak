@@ -29,7 +29,10 @@ VIDEOLAN_GIT := https://git.videolan.org/git
 GITHUB := https://github.com
 GOOGLE_CODE := https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com
 GNUGPG := https://www.gnupg.org/ftp/gcrypt
-QT := https://download.qt.io/official_releases/qt/$(QTBASE_VERSION_MAJOR)
+# vlc-gold: 6.8.3 is gone from /official_releases/ but Qt keeps an archive at
+# /archive/. Building Qt from source here gives a self-consistent Qt 6.8.3 --
+# matching libs and tools, which the prebuilt-contribs route cannot provide.
+QT := https://download.qt.io/archive/qt/$(QTBASE_VERSION_MAJOR)
 XIPH := https://ftp.osuosl.org/pub/xiph/releases
 XORG := https://www.x.org/releases/individual
 
@@ -694,6 +697,21 @@ prebuilt: vlc-contrib-$(HOST)-latest.tar.bz2
 	$(UNPACK)
 	mv $(HOST) $(PREFIX)
 	cd $(PREFIX) && $(abspath $(SRC))/change_prefix.sh
+# vlc-gold: the prebuilt tarball ships target_qt.conf with a host prefix baked
+# in from videolan's own build container:
+#     HostPrefix=../../../../../../../../opt/tools
+# which resolves to /opt/tools -- absent here -- so every qmake invocation
+# dies on "/opt/tools/libexec/qmlimportscanner: not found". The rest of the
+# file (HostBinaries=bin, HostLibraryExecutables=libexec, HostLibraries=lib) is
+# relative to the contrib root, so only the prefix needs correcting. HostData
+# must be patched too: qmake resolves it relative to HostPrefix, so changing
+# HostPrefix alone doubles the path and then qmake cannot find spec
+# 'win32-g++'. Absolute paths for both remove the ambiguity.
+	@if [ -f $(PREFIX)/bin/target_qt.conf ]; then \
+	    sed -i -e 's|^HostPrefix=.*|HostPrefix=$(abspath $(PREFIX)/..)|' \
+	           -e 's|^HostData=.*|HostData=$(abspath $(PREFIX))|' \
+	           $(PREFIX)/bin/target_qt.conf; \
+	fi
 
 package: install
 	rm -Rf tmp/

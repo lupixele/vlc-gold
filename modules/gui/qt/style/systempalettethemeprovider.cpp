@@ -136,16 +136,34 @@ static int updatePalette(vlc_qt_theme_provider_t* obj)
 
     QPalette& palette = sys->m_palette;
 
-    QColor accent = QColor( sys->m_isDark ? "#FF8800" : "#FF610A" );
-    QColor accentPressed = QColor( sys->m_isDark ? "#e67a30" : "#e65609" );
+    // vlc-gold: pin the palette to the design tokens instead of deriving the
+    // surfaces from the host OS palette. "VLC Redesign (Community)" specifies
+    // near-black surfaces and a single purple accent, independent of the OS
+    // light/dark setting -- so both branches collapse to the same values here.
+    // Upstream instead took its accent from m_isDark (#FF8800 / #FF610A).
+    palette.setColor(QPalette::Window,          QColor("#0e0e0e"));
+    palette.setColor(QPalette::Base,            QColor("#191919"));
+    palette.setColor(QPalette::AlternateBase,   QColor("#151515"));
+    palette.setColor(QPalette::Button,          QColor("#1b1b1b"));
+    palette.setColor(QPalette::WindowText,      QColor("#eaeaea"));
+    palette.setColor(QPalette::Text,            QColor("#eaeaea"));
+    palette.setColor(QPalette::ButtonText,      QColor("#eaeaea"));
+    palette.setColor(QPalette::BrightText,      QColor("#ffffff"));
+    palette.setColor(QPalette::Mid,             QColor("#303030"));
+    palette.setColor(QPalette::Shadow,          QColor("#000000"));
+    palette.setColor(QPalette::Highlight,       QColor("#8a38f5"));
+    palette.setColor(QPalette::HighlightedText, QColor("#ffffff"));
+
+    QColor accent("#8a38f5");
+    QColor accentPressed = accent.darker(130);
     QColor textOnAccent = Qt::white;
-    QColor visualFocus =  sys->m_isDark ? Qt::white : Qt::black;
+    QColor visualFocus = Qt::white;
     QColor shadow = palette.color(QPalette::Normal, QPalette::Shadow);
     shadow.setAlphaF(0.22);
     QColor separator = palette.color(QPalette::Normal, QPalette::Mid);
 
-    QColor hightlight = palette.color(QPalette::Normal, QPalette::Highlight);
-    QColor textOnHightlight = palette.color(QPalette::Normal, QPalette::HighlightedText);
+    QColor hightlight = accent;
+    QColor textOnHightlight = Qt::white;
 
     QColor buttonBgNormal = palette.color(QPalette::Normal, QPalette::Button);
     buttonBgNormal.setAlpha(0);

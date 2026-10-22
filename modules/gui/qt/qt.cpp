@@ -489,7 +489,13 @@ vlc_module_begin ()
         set_callback( QtWin32CSDMenuOpen )
 #endif
     add_submodule()
-        set_capability("qt theme provider", 1)
+        // vlc-gold: this provider carries the vlc-gold design tokens, so it must
+        // outrank the Windows provider (10) and the GTK provider (0). Upstream
+        // deliberately scored it lowest (1) because it is the least
+        // platform-aware fallback; here the design palette IS the point, and
+        // leaving the Windows provider in charge made every surface follow
+        // COLOR_3DFACE from the host OS theme.
+        set_capability("qt theme provider", 11)
         set_description( "Qt basic system theme" )
         set_callback( SystemPaletteThemeProviderOpen )
         add_shortcut("qt-themeprovider-systempalette")

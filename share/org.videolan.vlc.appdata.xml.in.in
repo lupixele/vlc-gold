@@ -13,9 +13,20 @@
             framework that plays most multimedia files as well as DVDs, Audio CDs,
             VCDs, and various streaming protocols.
         </p>
+        <p>
+            This is the vlc-gold redesign: an independent fork of VLC with a
+            reworked interface. It is not affiliated with or endorsed by
+            VideoLAN; issues and development happen on this repository, and
+            upstream changes are merged in regularly.
+        </p>
     </description>
-    <url type="homepage">https://www.videolan.org/vlc/</url>
-    <url type="bugtracker">https://trac.videolan.org/vlc/</url>
+    <!-- vlc-gold: repointed away from videolan.org so the metadata describes
+         this fork. vcs-browser is the AppStream field that software centres
+         show as the project/source page. Donation keeps pointing at VideoLAN,
+         who are the authors of the player this is built on. -->
+    <url type="homepage">https://github.com/lupixele/vlc-gold</url>
+    <url type="bugtracker">https://github.com/lupixele/vlc-gold/issues</url>
+    <url type="vcs-browser">https://github.com/lupixele/vlc-gold</url>
     <url type="donation">https://www.videolan.org/contribute.html</url>
     <releases>
         <release version="@VERSION@" />

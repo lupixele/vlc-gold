@@ -272,6 +272,24 @@ Item {
             }
         }
 
+        // vlc-gold: the Figma redesign places a 427px navigation rail and
+        // library panel down the left edge (frame 187:328), so the page stack
+        // is inset by that much rather than filling the whole window.
+        RowLayout {
+            anchors.fill: parent
+            spacing: 0
+
+            VLCGoldSidebar {
+                id: vlcGoldSidebar
+
+                Layout.preferredWidth: MainCtx.dp(427, VLCStyle.scale)
+                Layout.fillHeight: true
+            }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
         Widgets.PageLoader {
             id: stackView
             anchors.fill: parent
@@ -288,6 +306,8 @@ Item {
                         MainCtx.requestShowMainView()
                     }
                 }
+            }
+        }
             }
         }
 
